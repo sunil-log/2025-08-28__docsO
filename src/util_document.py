@@ -1,6 +1,6 @@
+import sys
 from datetime import datetime
 from pathlib import Path
-
 
 class Document:
 	"""
@@ -15,35 +15,35 @@ class Document:
 	- dir_path (Path): 생성할 디렉토리의 전체 경로
 
 	Methods:
-	- generate_doc_title_date(): 현재 날짜와 doc_title을 결합하여 제한된 길이의 문자열을 반환
 	- create_dir(): doc_title_date를 이름으로 하는 디렉토리를 생성
 	- create_page(): 생성된 디렉토리에 Markdown 파일을 작성
 	- process_tags(): 입력된 태그들을 가공하여 리스트로 반환
 	"""
 
-
-	def __init__(self):
+	def __init__(self, title=None, tags='tag1, tag2', obsidian_dir="/home/sac/Dropbox/Obsidian/docsO"):
 		"""
 		Document 클래스 초기화
 
 		Parameters:
-		- doc_title (str): 문서의 제목
-		- tags (str): 문서의 태그들, 콤마로 구분
+		- title (str, optional): 문서의 제목. Defaults to None.
+		- tags (str, optional): 문서의 태그들, 콤마로 구분. Defaults to 'tag1, tag2'.
+		- obsidian_dir (str, optional): Obsidian 문서가 저장될 상위 디렉토리 경로. Defaults to "/home/sac/Dropbox/Obsidian/docsO".
 		"""
 
-		self.tags = 'tag1, tag2'
+		self.tags = tags
 		self.processed_tags = self.process_tags()
 
-		self.docsO_dir = "/home/sac/Dropbox/Obsidian/docsO"
+		self.docsO_dir = obsidian_dir
 
 		self.current_dir = datetime.now().strftime('%Y-%m-%d-%H-%M-%S')
 		self.today = datetime.now().strftime('%Y-%m-%d')
 		self.time = datetime.now().strftime('%H-%M-%S')
 		self.dir_path = Path(f"{self.docsO_dir}/{self.current_dir}")
 
-		self.doc_title = f"result, project, {self.today}, untitled ({self.time})"
-
-
+		if title:
+			self.doc_title = f"result, project, {self.today}, {title} ({self.time})"
+		else:
+			self.doc_title = f"result, project, {self.today}, untitled ({self.time})"
 
 	def create_dir(self):
 		"""
@@ -55,7 +55,7 @@ class Document:
 			print(f"디렉토리 '{self.dir_path}' 이미 존재합니다.")
 			sys.exit()
 		else:
-			self.dir_path.mkdir()
+			self.dir_path.mkdir(parents=True, exist_ok=True)
 
 	def create_page(self):
 		"""
@@ -91,10 +91,8 @@ class Document:
 		"""
 		processed_tags = []
 		for tag in self.tags.split(','):
-			tag = tag.replace(' ', '-').lower()
+			tag = tag.strip().replace(' ', '-').lower()
 			tag = tag.strip('-')
-			processed_tags.append(tag)
+			if tag:
+				processed_tags.append(tag)
 		return processed_tags
-
-
-
