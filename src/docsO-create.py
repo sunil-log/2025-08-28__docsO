@@ -5,17 +5,32 @@ from pathlib import Path
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description="Create a new document page and a symbolic link.")
-    parser.add_argument('--title', type=str, help='The title of the document.')
     parser.add_argument('--tags', type=str, default='tag1, tag2', help='Comma-separated tags for the document.')
     parser.add_argument('--obsidian-dir', type=str, default="/home/sac/Dropbox/Obsidian/docsO", help='The base directory for Obsidian documents.')
     parser.add_argument('--downloads-dir', type=str, default="/home/sac/Downloads", help='The directory to create a symbolic link in.')
     args = parser.parse_args()
 
+    # 1. prefix 선택
+    prefix_choice = input("Select a prefix:\n1: result, project\n2: memo\nEnter number: ")
+    if prefix_choice == '1':
+        prefix = "result, project"
+    elif prefix_choice == '2':
+        prefix = "memo"
+    else:
+        print("Invalid selection. Exiting.")
+        exit()
+
+    # 2. title 입력
+    title = input("Enter title (press Enter for 'untitled'): ")
+    if not title.strip():
+        title = None
+
     # make a page
     document = Document(
-        title=args.title,
+        title=title,
         tags=args.tags,
-        obsidian_dir=args.obsidian_dir
+        obsidian_dir=args.obsidian_dir,
+        prefix=prefix
     )
     document.create_dir()
     document.create_page()

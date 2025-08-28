@@ -20,7 +20,7 @@ class Document:
 	- process_tags(): 입력된 태그들을 가공하여 리스트로 반환
 	"""
 
-	def __init__(self, title=None, tags='tag1, tag2', obsidian_dir="/home/sac/Dropbox/Obsidian/docsO"):
+	def __init__(self, title=None, tags='tag1, tag2', obsidian_dir="/home/sac/Dropbox/Obsidian/docsO", prefix="result, project"):
 		"""
 		Document 클래스 초기화
 
@@ -28,6 +28,7 @@ class Document:
 		- title (str, optional): 문서의 제목. Defaults to None.
 		- tags (str, optional): 문서의 태그들, 콤마로 구분. Defaults to 'tag1, tag2'.
 		- obsidian_dir (str, optional): Obsidian 문서가 저장될 상위 디렉토리 경로. Defaults to "/home/sac/Dropbox/Obsidian/docsO".
+		- prefix (str, optional): 문서 제목의 접두사. Defaults to "result, project".
 		"""
 
 		self.tags = tags
@@ -41,9 +42,9 @@ class Document:
 		self.dir_path = Path(f"{self.docsO_dir}/{self.current_dir}")
 
 		if title:
-			self.doc_title = f"result, project, {self.today}, {title} ({self.time})"
+			self.doc_title = f"{prefix}, {self.today}, {title} ({self.time})"
 		else:
-			self.doc_title = f"result, project, {self.today}, untitled ({self.time})"
+			self.doc_title = f"{prefix}, {self.today}, untitled ({self.time})"
 
 	def create_dir(self):
 		"""
@@ -75,7 +76,15 @@ class Document:
 		d_yaml = "---\n" + "\n".join([f"{key}: {value}" for key, value in d.items()]) + "\n---\n"
 
 		# dataview script
-		dv1 = """\n```table-of-contents\nmaxLevel: 2\n```\n\n\n\nWrite Contents Here!\n\n\n\n```dataview\nTABLE FROM #stared\n```\n\n```dataview\nTABLE dateformat(file.mtime, "dd.MM.yyyy - HH:mm") AS "Last modified" FROM "" SORT file.mtime DESC LIMIT 10\n```"""
+		dv1 = """\n```table-of-contents
+maxLevel: 2
+```\n\n\n
+Write Contents Here!
+\n\n\n```dataview
+TABLE FROM #stared
+```\n\n```dataview
+TABLE dateformat(file.mtime, "dd.MM.yyyy - HH:mm") AS "Last modified" FROM "" SORT file.mtime DESC LIMIT 10
+```"""
 
 		with md_file_path.open('w') as f:
 			f.write(d_yaml)
