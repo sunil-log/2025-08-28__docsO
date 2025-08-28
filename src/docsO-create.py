@@ -42,6 +42,16 @@ if __name__ == '__main__':
     copy_to_clipboard(f"[[{document.doc_title}]]")
     print(f"[[{document.doc_title}]] copied to clipboard")
 
+    # 지정된 파일에 [[title]] 추가
+    dashboard_path = "/home/sac/Dropbox/Obsidian/docsO/2024-11-02-17-17-38/dashboard, memo.md"
+    try:
+        with open(dashboard_path, "a") as dashboard_file:
+            dashboard_file.write(f"\n[[{document.doc_title}]]")
+        print(f"Appended to dashboard: {dashboard_path}")
+    except FileNotFoundError:
+        print(f"Error: Dashboard file not found at {dashboard_path}")
+
+
     # 심볼릭 링크를 생성할 경로와 원본 디렉토리 경로를 정의합니다.
     downloads_dir = Path(args.downloads_dir)
     original_dir_path = document.dir_path
