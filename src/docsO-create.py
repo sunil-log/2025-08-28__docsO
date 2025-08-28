@@ -1,5 +1,5 @@
 from util_document import Document
-from util_sac.control_ubuntu.clipboard import copy_to_clipboard
+from utils.control_ubuntu.clipboard import copy_to_clipboard
 from pathlib import Path # 👈 1. Path 객체를 사용하기 위해 import 합니다.
 
 
