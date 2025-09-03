@@ -44,12 +44,29 @@ if __name__ == '__main__':
 	copy_to_clipboard(f"[[{document.doc_title}]]")
 	print(f"[[{document.doc_title}]] copied to clipboard")
 
-	# 지정된 파일에 [[title]] 추가
+	# 지정된 파일에 [[title]] 추가 - "# New" 라인 다음에 삽입
 	dashboard_path = "/home/sac/Dropbox/Obsidian/docsO/2024-11-02-17-17-38/dashboard, memo.md"
 	try:
-		with open(dashboard_path, "a") as dashboard_file:
-			dashboard_file.write(f"\n[[{document.doc_title}]]")
-		print(f"Appended to dashboard: {dashboard_path}")
+		with open(dashboard_path, "r") as dashboard_file:
+			lines = dashboard_file.readlines()
+		
+		# "# New" 라인을 찾아서 그 다음에 새 링크 삽입
+		new_lines = []
+		inserted = False
+		for line in lines:
+			new_lines.append(line)
+			if line.strip() == "# New" and not inserted:
+				new_lines.append(f"[[{document.doc_title}]]\n")
+				inserted = True
+		
+		# "# New" 라인을 찾지 못한 경우 맨 끝에 추가
+		if not inserted:
+			new_lines.append(f"\n[[{document.doc_title}]]")
+		
+		with open(dashboard_path, "w") as dashboard_file:
+			dashboard_file.writelines(new_lines)
+		
+		print(f"Inserted after '# New' in dashboard: {dashboard_path}")
 	except FileNotFoundError:
 		print(f"Error: Dashboard file not found at {dashboard_path}")
 
